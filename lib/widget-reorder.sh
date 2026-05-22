@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # Known widget short names (must match case labels in build_widget_string)
-WIDGET_NAMES=(battery path music netspeed git wbg datetime hostname)
+WIDGET_NAMES=(battery path music netspeed git wbg datetime date time hostname)
 
 # Reset all companion widget-enabled flags to 0.
 # Call once before build_widget_string to avoid stale flags.
@@ -67,6 +67,14 @@ function build_widget_string() {
       datetime)
         result+="$date_and_time"
         tmux set-option -g "@tokyo-night-tmux_widget_enabled_datetime" 1 2>/dev/null
+        ;;
+      date)
+        result+="$date_widget"
+        tmux set-option -g "@tokyo-night-tmux_widget_enabled_date" 1 2>/dev/null
+        ;;
+      time)
+        result+="$time_widget"
+        tmux set-option -g "@tokyo-night-tmux_widget_enabled_time" 1 2>/dev/null
         ;;
       hostname)
         result+="$hostname"

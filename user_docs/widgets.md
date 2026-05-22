@@ -41,6 +41,8 @@ set -g @tokyo-night-tmux_show_second_right_widgets "music,netspeed"
 | `git` | Git status | `_show_git` | |
 | `wbg` | GitHub/GitLab | `_show_wbg` | |
 | `datetime` | Date & Time | `_show_datetime` | |
+| `date` | Date only | `_show_date` | |
+| `time` | Time only | `_show_time` | |
 | `hostname` | Hostname | `_show_hostname` | |
 
 ### Second status bar

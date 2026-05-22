@@ -154,7 +154,7 @@ Reload with `tmux source ~/.tmux.conf`.
 | `show_second_left_widgets` | comma-separated widget names | `path` | Second bar left side (auto-enables bar) |
 | `show_second_right_widgets` | comma-separated widget names | `netspeed` | Second bar right side (auto-enables bar) |
 
-**Available widget names:** `battery`, `path`, `music`, `netspeed`, `git`, `wbg`, `datetime`, `hostname`.
+**Available widget names:** `battery`, `path`, `music`, `netspeed`, `git`, `wbg`, `datetime`, `date`, `time`, `hostname`.
 Passthrough entries (`#()`, `#{}`, `#[]`) are injected verbatim.
 Being in any order list **auto-enables** the widget. Set `_show_<name> 0` to hard opt-out.
 
@@ -170,6 +170,8 @@ Being in any order list **auto-enables** the widget. Set `_show_<name> 0` to har
 | `show_path` | off |
 | `show_hostname` | off |
 | `show_datetime` | off |
+| `show_date` | off |
+| `show_time` | off |
 
 ### Widget detail options
 
