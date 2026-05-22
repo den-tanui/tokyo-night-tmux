@@ -140,6 +140,74 @@ set -g @tokyo-night-tmux_show_datetime 1
 
 ---
 
+## Configuration reference
+
+All options are set via `set -g @tokyo-night-tmux_<key> <value>` in `~/.tmux.conf`.
+Reload with `tmux source ~/.tmux.conf`.
+
+### Status bar layout
+
+| Option | Values | Default | Description |
+|--------|--------|---------|-------------|
+| `show_right_widgets` | comma-separated widget names | *(upstream fallback)* | Main bar widget order |
+| `show_second_status` | `0`, `1` | auto | Force second status bar off (`0`) |
+| `show_second_left_widgets` | comma-separated widget names | `path` | Second bar left side (auto-enables bar) |
+| `show_second_right_widgets` | comma-separated widget names | `netspeed` | Second bar right side (auto-enables bar) |
+
+**Available widget names:** `battery`, `path`, `music`, `netspeed`, `git`, `wbg`, `datetime`, `hostname`.
+Passthrough entries (`#()`, `#{}`, `#[]`) are injected verbatim.
+Being in any order list **auto-enables** the widget. Set `_show_<name> 0` to hard opt-out.
+
+### Per-widget toggles
+
+| Option | Default |
+|--------|---------|
+| `show_git` | off |
+| `show_wbg` | off |
+| `show_netspeed` | off |
+| `show_battery_widget` | off |
+| `show_music` | off |
+| `show_path` | off |
+| `show_hostname` | off |
+| `show_datetime` | off |
+
+### Widget detail options
+
+| Widget | Option | Values | Default | Description |
+|--------|--------|--------|---------|-------------|
+| **Netspeed** | `netspeed_iface` | interface name | auto-detected | Network interface to monitor |
+| | `netspeed_showip` | `off`, `local`, `public`, `both` | `local` | IP address display mode |
+| | `netspeed_show_country` | `0`, `1` | `1` | Country flag next to public IP |
+| | `netspeed_show_dns` | `0`, `1` | `0` | Active DNS server |
+| | `netspeed_refresh` | seconds | `1` | Speed sample interval |
+| | `netspeed_ip_refresh_rate` | seconds | `300` | Public IP fetch interval |
+| | `netspeed_signal_refresh_rate` | seconds | `10` | SSID/signal re-sample interval |
+| **Battery** | `battery_name` | battery name | `BAT1` / `InternalBattery-0` | Power supply device |
+| | `battery_low_threshold` | 0–100 | `21` | Warning threshold % |
+| **Date & Time** | `date_format` | `YMD`, `MDY`, `DMY`, `hide` | system default | Date display format |
+| | `time_format` | `12H`, `24H`, `hide` | `24H` | Time display format |
+| **Path** | `path_format` | `relative`, `full` | `relative` | Path display style |
+
+### Theme & appearance
+
+| Option | Values | Default | Description |
+|--------|--------|---------|-------------|
+| `theme` | `night`, `storm`, `moon`, `day` | `night` | Color palette |
+| `transparent` | `0`, `1` | `0` | Transparent background |
+| `window_id_style` | `digital`, `roman`, `fsquare`, `hsquare`, `dsquare`, `super`, `sub`, `none`, `hide` | `digital` | Window number style |
+| `pane_id_style` | same as above | `hsquare` | Pane number style |
+| `zoom_id_style` | same as above | `dsquare` | Zoomed pane number style |
+| `terminal_icon` | any glyph | `` | Inactive window icon |
+| `active_terminal_icon` | any glyph | `` | Active window icon |
+| `window_tidy_icons` | `0`, `1` | `0` | Remove extra space between icons |
+
+### Hard opt-out
+
+`set -g @tokyo-night-tmux_show_<name> 0` disables a widget everywhere, even if
+it appears in a widget order list.
+
+---
+
 ## Documentation
 
 | Topic | Link |
