@@ -81,3 +81,26 @@ setup() {
   run build_widget_string "show_right_widgets"
   [[ $output == "${git_status}${date_and_time}" ]]
 }
+
+@test "build_widget_string works with show_second_left_widgets option name" {
+  export TMUX_VARS="@tokyo-night-tmux_show_second_left_widgets ssid, signal"
+  run build_widget_string "show_second_left_widgets"
+  # Unknown names are silently skipped — output is empty
+  [[ -z $output ]]
+}
+
+@test "build_widget_string works with show_second_right_widgets option name" {
+  export TMUX_VARS="@tokyo-night-tmux_show_second_right_widgets git, netspeed"
+  run build_widget_string "show_second_right_widgets"
+  [[ $output == "${git_status}${netspeed}" ]]
+}
+
+@test "tmux_version_gte returns true for versions below installed" {
+  run tmux_version_gte "0.8"
+  [[ $status -eq 0 ]]
+}
+
+@test "tmux_version_gte returns false for versions above installed" {
+  run tmux_version_gte "99.0"
+  [[ $status -eq 1 ]]
+}

@@ -42,3 +42,14 @@ function build_widget_string() {
   IFS="$saved_ifs"
   echo "$result"
 }
+
+# Check if tmux version is >= a minimum version
+# Usage: tmux_version_gte <major.minor>
+#   e.g. tmux_version_gte 3.2  →  returns 0 if tmux >= 3.2
+function tmux_version_gte() {
+  local target="$1"
+  local tmux_ver
+  tmux_ver=$(tmux -V 2>/dev/null | sed 's/[^0-9.]//g' | cut -d. -f1-2)
+  [[ -z $tmux_ver ]] && return 1
+  [[ $(echo "$tmux_ver >= $target" | bc) -eq 1 ]]
+}

@@ -85,3 +85,16 @@ else
   tmux set -g status-right "$battery_status$current_path$cmus_status$netspeed$git_status$wb_git_status$date_and_time"
 fi
 tmux set -g window-status-separator ""
+
+#+--- Second Status Line ---+
+SECOND_STATUS=$(echo "$TMUX_VARS" | grep '@tokyo-night-tmux_show_second_status' | cut -d" " -f2)
+if [[ ${SECOND_STATUS} -eq 1 ]] && tmux_version_gte 3.2; then
+  tmux set -g status 2
+
+  SECOND_LEFT=$(build_widget_string "show_second_left_widgets")
+  SECOND_RIGHT=$(build_widget_string "show_second_right_widgets")
+
+  if [[ -n $SECOND_LEFT ]] || [[ -n $SECOND_RIGHT ]]; then
+    tmux set -g status-format[1] "${RESET}#[align=left]${SECOND_LEFT}#[align=right]${SECOND_RIGHT}"
+  fi
+fi
