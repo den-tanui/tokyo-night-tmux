@@ -91,6 +91,20 @@ set -g @tokyo-night-tmux_show_path 1            # current path
 set -g @tokyo-night-tmux_show_hostname 1        # machine hostname
 ```
 
+### 5. Reorder widgets *(optional)*
+
+By default widgets appear in a fixed order. Customize which widgets show and their sequence:
+
+```bash
+set -g @tokyo-night-tmux_show_right_widgets "path, git, datetime"
+```
+
+You can also inject arbitrary tmux commands, format variables, or attributes anywhere in the list:
+
+```bash
+set -g @tokyo-night-tmux_show_right_widgets "path, git, #(curl -s http://localhost/status | head -c 40), datetime"
+```
+
 Reload your config: `tmux source ~/.tmux.conf`
 
 ---
@@ -108,6 +122,7 @@ Reload your config: `tmux source ~/.tmux.conf`
 | Date & Time | Configurable format (YMD/MDY/DMY, 12H/24H) |
 | Path widget | Current pane path (relative or absolute) |
 | Hostname | Machine hostname in the status bar |
+| Widget reordering | Choose which widgets appear, their order, and inject custom commands |
 | Number styles | 8 styles for window/pane IDs (digital, roman, squares, …) |
 | SSH indicator | Automatic icon change for SSH sessions |
 | Prefix highlight | Visual indicator when tmux prefix is active |
