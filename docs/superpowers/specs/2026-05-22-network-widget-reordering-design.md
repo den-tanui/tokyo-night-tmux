@@ -45,6 +45,14 @@ Valid values for `show_right_widgets`, `show_second_left_widgets`, and `show_sec
 | `datetime` | Date and time | `src/datetime-widget.sh` |
 | `hostname` | Machine hostname | `src/hostname-widget.sh` |
 
+**Arbitrary commands and tmux formats:** Any list entry starting with `#(` or `#{` is passed through verbatim — no name-to-script mapping is applied. This allows users to inject their own `#(/path/to/script.sh)`, inline `#(curl http://...)`, tmux format variables like `#{session_name}`, or raw format attributes like `#[fg=red]  ●  `. This makes the widget list fully extensible without plugin changes.
+
+Example config with arbitrary commands:
+```
+set -g @tokyo-night-tmux_show_right_widgets "path, git, #(~/.tmux/my-widget.sh)"
+set -g @tokyo-night-tmux_show_second_right_widgets "netspeed, #(curl -s http://localhost:8080/status | head -c 40), #[fg=#82aaff]◆"
+```
+
 ## Architecture
 
 ### Entrypoint (`tokyo-night.tmux`)
@@ -56,6 +64,42 @@ build_widget_string(tmux_vars, list_option_name) → formatted_status_string
 ```
 
 This function parses the comma-separated option, iterates over widget names, and concatenates the corresponding `#()` tmux substitution strings. The same function is used for `status-right` (from `show_right_widgets`) and for both sides of `status-format[1]` (from `show_second_left_widgets` / `show_second_right_widgets`).
+
+**Arbitrary command passthrough:** For each item in the list, the function checks if it starts with `#(` or `#{`. If so, the item is appended verbatim without any mapping. If not, the item is matched against the known widget names via a `case` statement. This allows users to inject custom scripts, inline commands, tmux format variables, or raw format attributes anywhere in the order.
+
+```bash
+build_widget_string() {
+  local tmux_vars="$1"
+  local list_option="$2"
+  local list
+  list=$(echo "$tmux_vars" | grep "@tokyo-night-tmux_${list_option}" | cut -d" " -f2)
+  [[ -z $list ]] && return
+
+  local result=""
+  IFS=',' read -ra ITEMS <<< "$list"
+  for item in "${ITEMS[@]}"; do
+    item="$(echo "$item" | xargs)"
+    # Passthrough for custom tmux commands / formats
+    if [[ $item == "#("* ]] || [[ $item == "#{"* ]]; then
+      result+="$item"
+    else
+      case "$item" in
+        battery)  result+="$battery_status" ;;
+        path)     result+="$current_path" ;;
+        music)    result+="$cmus_status" ;;
+        netspeed) result+="$netspeed" ;;
+        git)      result+="$git_status" ;;
+        wbg)      result+="$wb_git_status" ;;
+        datetime) result+="$date_and_time" ;;
+        hostname) result+="$hostname" ;;
+      esac
+    fi
+  done
+  echo "$result"
+}
+```
+
+The same function serves both the main bar (`show_right_widgets`) and the second bar (`show_second_left_widgets`, `show_second_right_widgets`).
 
 **Flow:**
 
