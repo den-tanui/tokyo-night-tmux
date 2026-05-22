@@ -1,21 +1,22 @@
 # Tokyo Night Tmux
 
-![CI](https://github.com/janoamaral/tokyo-night-tmux/actions/workflows/pre-commit.yml/badge.svg?branch=master)
-
 A clean, dark Tmux theme inspired by the lights of [Tokyo at night](https://www.google.com/search?q=tokyo+night&tbm=isch).
 Adapted from the [Tokyo Night VS Code theme](https://github.com/enkia/tokyo-night-vscode-theme) — the perfect companion for [tokyonight-vim](https://github.com/ghifarit53/tokyonight-vim).
-
-<a href="https://www.buymeacoffee.com/jano" target="_blank"><img src="https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png" alt="Buy Me A Coffee" style="height: 41px !important;width: 174px !important;" ></a>
 
 ---
 
 ## Preview
 
-https://github.com/janoamaral/tokyo-night-tmux/assets/10008708/59ecd814-bc2b-47f2-82b1-ffdbfbc54fbf
-
 > Terminal: [Kitty](https://github.com/davidmathers/tokyo-night-kitty-theme) · Font: [SFMono Nerd Font Ligaturized](https://github.com/shaunsingh/SFMono-Nerd-Font-Ligaturized)
 
-![Screenshot](snaps/logico.png)
+![Default status bar](snaps/logico.png)
+*Default status bar*
+
+![Second status bar](snaps/Second-status.png)
+*Second status bar with path, netspeed, and music widgets*
+
+![Path widget with spaces](snaps/Path-with-spaces.png)
+*Path widget showing directories with spaces*
 
 ---
 
@@ -64,12 +65,12 @@ apk add bash bc coreutils gawk git jq playerctl sed
 
 → Full dependency list: [user_docs/installation.md](user_docs/installation.md)
 
-### 2. Install the plugin
+### 2. Install the plugin via TPM
 
 Add to `~/.tmux.conf` and press `prefix` + <kbd>I</kbd> to install:
 
 ```bash
-set -g @plugin "janoamaral/tokyo-night-tmux"
+set -g @plugin "den-tanui/tokyo-night-tmux"
 ```
 
 ### 3. Pick a theme *(optional)*
@@ -79,33 +80,39 @@ set -g @tokyo-night-tmux_theme night   # night (default) | storm | moon | day
 set -g @tokyo-night-tmux_transparent 1 # transparent background
 ```
 
-### 4. Enable widgets *(optional)*
+### 4. Enable and reorder widgets
+
+Configure which widgets appear and in what order. Being in a widget list
+**auto-enables** the widget — no need for individual `_show_*` flags.
 
 ```bash
-set -g @tokyo-night-tmux_show_git 1             # local git status
-set -g @tokyo-night-tmux_show_wbg 1             # GitHub / GitLab stats
-set -g @tokyo-night-tmux_show_netspeed 1        # network speed
-set -g @tokyo-night-tmux_show_battery_widget 1  # battery level
-set -g @tokyo-night-tmux_show_music 1           # now playing
-set -g @tokyo-night-tmux_show_path 1            # current path
-set -g @tokyo-night-tmux_show_hostname 1        # machine hostname
+# Main bar (right side)
+set -g @tokyo-night-tmux_show_right_widgets "battery,git,datetime"
+
+# Second status bar (tmux ≥ 3.2 — auto-enabled when these options are set)
+set -g @tokyo-night-tmux_show_second_left_widgets "path"
+set -g @tokyo-night-tmux_show_second_right_widgets "music,netspeed"
 ```
 
-### 5. Reorder widgets *(optional)*
-
-By default widgets appear in a fixed order. Customize which widgets show and their sequence:
-
-```bash
-set -g @tokyo-night-tmux_show_right_widgets "path, git, datetime"
-```
+Reload: `tmux source ~/.tmux.conf`
 
 You can also inject arbitrary tmux commands, format variables, or attributes anywhere in the list:
 
 ```bash
-set -g @tokyo-night-tmux_show_right_widgets "path, git, #(curl -s http://localhost/status | head -c 40), datetime"
+set -g @tokyo-night-tmux_show_right_widgets "path,git,#(curl -s http://localhost/status | head -c 40),datetime"
 ```
 
-Reload your config: `tmux source ~/.tmux.conf`
+### Alternative: per-widget toggles
+
+You can still use the traditional `_show_<name>` flags if you prefer:
+
+```bash
+set -g @tokyo-night-tmux_show_git 1
+set -g @tokyo-night-tmux_show_netspeed 1
+set -g @tokyo-night-tmux_show_battery_widget 1
+set -g @tokyo-night-tmux_show_music 1
+set -g @tokyo-night-tmux_show_datetime 1
+```
 
 ---
 
@@ -114,15 +121,18 @@ Reload your config: `tmux source ~/.tmux.conf`
 | Feature | Description |
 |---|---|
 | 4 color themes | Night, Storm, Moon, Day — plus transparent background |
+| **Widget reordering** | Customize widget order and position via comma-separated lists |
+| **Second status bar** | Dedicated row for path, netspeed, music, etc. (tmux ≥ 3.2) |
+| **Auto-enable by order** | Listing a widget in your config implicitly enables it |
 | Local git status | Branch, changes, push/pull sync indicator |
 | GitHub / GitLab widget | Open PRs, pending reviews, assigned issues |
-| Netspeed | Upload/download speed with interface detection |
+| Netspeed | Upload/download speed with Wi-Fi signal (%) and interface detection |
+| Signal strength | Color-coded percentage (red/yellow/green) |
 | Now Playing | Track info via playerctl (Linux) or nowplaying-cli (macOS) |
 | Battery | Level and charge state with contextual icons |
 | Date & Time | Configurable format (YMD/MDY/DMY, 12H/24H) |
 | Path widget | Current pane path (relative or absolute) |
 | Hostname | Machine hostname in the status bar |
-| Widget reordering | Choose which widgets appear, their order, and inject custom commands |
 | Number styles | 8 styles for window/pane IDs (digital, roman, squares, …) |
 | SSH indicator | Automatic icon change for SSH sessions |
 | Prefix highlight | Visual indicator when tmux prefix is active |
@@ -136,7 +146,7 @@ Reload your config: `tmux source ~/.tmux.conf`
 |---|---|
 | Installation & dependencies | [user_docs/installation.md](user_docs/installation.md) |
 | Color themes & transparency | [user_docs/themes.md](user_docs/themes.md) |
-| Status bar widgets | [user_docs/widgets.md](user_docs/widgets.md) |
+| Widget ordering & status bar | [user_docs/widgets.md](user_docs/widgets.md) |
 | Number styles & window icons | [user_docs/customization.md](user_docs/customization.md) |
 
 ---
@@ -144,13 +154,12 @@ Reload your config: `tmux source ~/.tmux.conf`
 ## Contributing
 
 > [!IMPORTANT]
-> Please read the [contribution guide](CONTRIBUTING.md) before opening a PR.
+> This is a personal fork — changes here may diverge significantly from the
+> upstream. PRs are welcome, but expect a different feature set.
 
 Feel free to open an issue or pull request with suggestions or improvements.
-Ensure your editor follows `.editorconfig`. [pre-commit] hooks are provided for
-code consistency and will run against all PRs.
+Ensure your editor follows `.editorconfig`.
 
-[pre-commit]: https://pre-commit.com/
 [Nerd Fonts]: https://www.nerdfonts.com/
 [bc]: https://www.gnu.org/software/bc/
 [jq]: https://jqlang.github.io/jq/

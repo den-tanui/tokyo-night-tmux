@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 
 ENABLED=$(tmux show-option -gv @tokyo-night-tmux_show_wbg)
+[[ ${ENABLED} -eq 0 ]] && exit 0
+[[ ${ENABLED} -ne 1 ]] && ENABLED=$(tmux show-option -gv @tokyo-night-tmux_widget_enabled_wbg 2>/dev/null)
 [[ ${ENABLED} -ne 1 ]] && exit 0
 
 CURRENT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"

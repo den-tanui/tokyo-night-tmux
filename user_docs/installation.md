@@ -71,7 +71,7 @@ apt-get install bash bc coreutils gawk git jq playerctl
 1. Add the following line to your `~/.tmux.conf`:
 
 ```bash
-set -g @plugin "janoamaral/tokyo-night-tmux"
+set -g @plugin "den-tanui/tokyo-night-tmux"
 ```
 
 2. Press `prefix` + <kbd>I</kbd> inside tmux to fetch and install the plugin.
@@ -81,7 +81,7 @@ set -g @plugin "janoamaral/tokyo-night-tmux"
 1. Clone the repository:
 
 ```bash
-git clone https://github.com/janoamaral/tokyo-night-tmux ~/.config/tmux/plugins/tokyo-night-tmux
+git clone https://github.com/den-tanui/tokyo-night-tmux ~/.config/tmux/plugins/tokyo-night-tmux
 ```
 
 2. Add the following line to your `~/.tmux.conf`:
