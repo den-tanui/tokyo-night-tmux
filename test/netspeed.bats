@@ -4,8 +4,12 @@ setup() {
   if [[ $(uname) == "Darwin" ]]; then
     HOMEBREW_PREFIX=$(brew --prefix)
     load "${HOMEBREW_PREFIX}/lib/bats-mock/stub.bash"
-  else
+  elif [[ -f /usr/lib/bats-mock/stub.bash ]]; then
+    # System-wide install (Alpine CI, etc.)
     load /usr/lib/bats-mock/stub.bash
+  else
+    # Project-local install (Arch Linux, dev machines)
+    load "${BATS_TEST_DIRNAME}/helpers/bats-mock/stub.bash"
   fi
   # shellcheck source=lib/netspeed.sh
   source "${BATS_TEST_DIRNAME}/../lib/netspeed.sh"
@@ -115,4 +119,85 @@ teardown() {
   run interface_ipv4 en69
   [[ $output == "" ]]
   [[ $status == 1 ]]
+}
+
+@test "Test signal_icon levels" {
+  source "${BATS_TEST_DIRNAME}/../lib/netspeed.sh"
+  # No signal / empty
+  run signal_icon ""
+  [[ -n $output ]]
+  # Level 1
+  run signal_icon 10
+  [[ -n $output ]]
+  # Level 2
+  run signal_icon 30
+  [[ -n $output ]]
+  # Level 3
+  run signal_icon 50
+  [[ -n $output ]]
+  # Level 4
+  run signal_icon 70
+  [[ -n $output ]]
+  # Level 5
+  run signal_icon 90
+  [[ -n $output ]]
+}
+
+@test "Test country_flag known codes" {
+  source "${BATS_TEST_DIRNAME}/../lib/netspeed.sh"
+  # US flag
+  run country_flag "US"
+  [[ -n $output ]]
+  # DE flag
+  run country_flag "DE"
+  [[ -n $output ]]
+  # JP flag
+  run country_flag "JP"
+  [[ -n $output ]]
+  # Invalid: single char
+  run country_flag "U"
+  [[ -z $output ]]
+}
+
+@test "Test write and read ip cache" {
+  source "${BATS_TEST_DIRNAME}/../lib/netspeed.sh"
+  local tmp_cache
+  tmp_cache=$(mktemp)
+  IP_CACHE_FILE="$tmp_cache"
+
+  write_ip_cache "203.0.113.42" "US" "wlan0" "MyWiFi"
+  [[ -f $tmp_cache ]]
+
+  run read_ip_cache "wlan0" "MyWiFi" "3600"
+  [[ $output == "203.0.113.42|US" ]]
+
+  rm -f "$tmp_cache"
+}
+
+@test "Test read_ip_cache returns empty for stale data" {
+  source "${BATS_TEST_DIRNAME}/../lib/netspeed.sh"
+  local tmp_cache
+  tmp_cache=$(mktemp)
+  IP_CACHE_FILE="$tmp_cache"
+
+  write_ip_cache "203.0.113.42" "US" "wlan0" "MyWiFi"
+  # Use 0-second refresh rate to force stale
+  run read_ip_cache "wlan0" "MyWiFi" "0"
+  [[ -z $output ]]
+
+  rm -f "$tmp_cache"
+}
+
+@test "Test read_ip_cache returns empty on iface change" {
+  source "${BATS_TEST_DIRNAME}/../lib/netspeed.sh"
+  local tmp_cache
+  tmp_cache=$(mktemp)
+  IP_CACHE_FILE="$tmp_cache"
+
+  write_ip_cache "203.0.113.42" "US" "wlan0" "MyWiFi"
+  # Different interface
+  run read_ip_cache "eth0" "MyWiFi" "3600"
+  [[ -z $output ]]
+
+  rm -f "$tmp_cache"
 }

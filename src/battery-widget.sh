@@ -2,6 +2,8 @@
 
 # Check if the battery widget is enabled
 ENABLED=$(tmux show-option -gv @tokyo-night-tmux_show_battery_widget 2>/dev/null)
+[[ ${ENABLED} -eq 0 ]] && exit 0
+[[ ${ENABLED} -ne 1 ]] && ENABLED=$(tmux show-option -gv @tokyo-night-tmux_widget_enabled_battery 2>/dev/null)
 [[ ${ENABLED} -ne 1 ]] && exit 0
 
 # Imports

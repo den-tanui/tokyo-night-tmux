@@ -1,5 +1,17 @@
 #!/usr/bin/env bash
 
+# Known widget short names (must match case labels in build_widget_string)
+WIDGET_NAMES=(battery path music netspeed git wbg datetime hostname)
+
+# Reset all companion widget-enabled flags to 0.
+# Call once before build_widget_string to avoid stale flags.
+function reset_widget_enabled() {
+  local name
+  for name in "${WIDGET_NAMES[@]}"; do
+    tmux set-option -g "@tokyo-night-tmux_widget_enabled_${name}" 0 2>/dev/null
+  done
+}
+
 # Build a status string from a comma-separated widget list option
 # Usage: build_widget_string <option_suffix>
 #   e.g. build_widget_string "show_right_widgets" reads @tokyo-night-tmux_show_right_widgets
@@ -28,14 +40,38 @@ function build_widget_string() {
       result+="$item"
     else
       case "$item" in
-      battery) result+="$battery_status" ;;
-      path) result+="$current_path" ;;
-      music) result+="$cmus_status" ;;
-      netspeed) result+="$netspeed" ;;
-      git) result+="$git_status" ;;
-      wbg) result+="$wb_git_status" ;;
-      datetime) result+="$date_and_time" ;;
-      hostname) result+="$hostname" ;;
+      battery)
+        result+="$battery_status"
+        tmux set-option -g "@tokyo-night-tmux_widget_enabled_battery" 1 2>/dev/null
+        ;;
+      path)
+        result+="$current_path"
+        tmux set-option -g "@tokyo-night-tmux_widget_enabled_path" 1 2>/dev/null
+        ;;
+      music)
+        result+="$cmus_status"
+        tmux set-option -g "@tokyo-night-tmux_widget_enabled_music" 1 2>/dev/null
+        ;;
+      netspeed)
+        result+="$netspeed"
+        tmux set-option -g "@tokyo-night-tmux_widget_enabled_netspeed" 1 2>/dev/null
+        ;;
+      git)
+        result+="$git_status"
+        tmux set-option -g "@tokyo-night-tmux_widget_enabled_git" 1 2>/dev/null
+        ;;
+      wbg)
+        result+="$wb_git_status"
+        tmux set-option -g "@tokyo-night-tmux_widget_enabled_wbg" 1 2>/dev/null
+        ;;
+      datetime)
+        result+="$date_and_time"
+        tmux set-option -g "@tokyo-night-tmux_widget_enabled_datetime" 1 2>/dev/null
+        ;;
+      hostname)
+        result+="$hostname"
+        tmux set-option -g "@tokyo-night-tmux_widget_enabled_hostname" 1 2>/dev/null
+        ;;
       esac
     fi
   done
