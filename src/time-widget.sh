@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 ENABLED=$(tmux show-option -gv @tokyo-night-tmux_show_time 2>/dev/null)
-[[ ${ENABLED} -eq 0 ]] && exit 0
+[[ "${ENABLED}" == "0" ]] && exit 0
 [[ ${ENABLED} -ne 1 ]] && ENABLED=$(tmux show-option -gv @tokyo-night-tmux_widget_enabled_time 2>/dev/null)
 [[ ${ENABLED} -ne 1 ]] && exit 0
 

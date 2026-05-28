@@ -2,7 +2,7 @@
 
 # Check if enabled
 ENABLED=$(tmux show-option -gv @tokyo-night-tmux_show_datetime 2>/dev/null)
-[[ ${ENABLED} -eq 0 ]] && exit 0
+[[ "${ENABLED}" == "0" ]] && exit 0
 [[ ${ENABLED} -ne 1 ]] && ENABLED=$(tmux show-option -gv @tokyo-night-tmux_widget_enabled_datetime 2>/dev/null)
 [[ ${ENABLED} -ne 1 ]] && exit 0
 
