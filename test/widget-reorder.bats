@@ -20,6 +20,12 @@ setup() {
   export wb_git_status="#(${BATS_TEST_DIRNAME}/../src/wb-git-status.sh #{pane_current_path} &)"
   export date_and_time="#(${BATS_TEST_DIRNAME}/../src/datetime-widget.sh)"
   export hostname="#(${BATS_TEST_DIRNAME}/../src/hostname-widget.sh)"
+  export netinfo="#(${BATS_TEST_DIRNAME}/../src/netinfo.sh)"
+  export netinfo_ssid="#(NETINFO_SHOW=ssid ${BATS_TEST_DIRNAME}/../src/netinfo.sh)"
+  export netinfo_signal="#(NETINFO_SHOW=signal ${BATS_TEST_DIRNAME}/../src/netinfo.sh)"
+  export netinfo_privateip="#(NETINFO_SHOW=privateip ${BATS_TEST_DIRNAME}/../src/netinfo.sh)"
+  export netinfo_publicip="#(NETINFO_SHOW=publicip ${BATS_TEST_DIRNAME}/../src/netinfo.sh)"
+  export netinfo_dns="#(NETINFO_SHOW=dns ${BATS_TEST_DIRNAME}/../src/netinfo.sh)"
 }
 
 @test "build_widget_string returns empty for unset option" {
@@ -85,14 +91,31 @@ setup() {
 @test "build_widget_string works with show_second_left_widgets option name" {
   export TMUX_VARS="@tokyo-night-tmux_show_second_left_widgets ssid, signal"
   run build_widget_string "show_second_left_widgets"
-  # Unknown names are silently skipped — output is empty
-  [[ -z $output ]]
+  [[ $output == "${netinfo_ssid}${netinfo_signal}" ]]
 }
 
 @test "build_widget_string works with show_second_right_widgets option name" {
   export TMUX_VARS="@tokyo-night-tmux_show_second_right_widgets git, netspeed"
   run build_widget_string "show_second_right_widgets"
   [[ $output == "${git_status}${netspeed}" ]]
+}
+
+@test "build_widget_string resolves monolithic netinfo" {
+  export TMUX_VARS="@tokyo-night-tmux_show_right_widgets netinfo"
+  run build_widget_string "show_right_widgets"
+  [[ $output == "$netinfo" ]]
+}
+
+@test "build_widget_string resolves netinfo sub-items" {
+  export TMUX_VARS="@tokyo-night-tmux_show_right_widgets dns, publicip, ssid"
+  run build_widget_string "show_right_widgets"
+  [[ $output == "${netinfo_dns}${netinfo_publicip}${netinfo_ssid}" ]]
+}
+
+@test "build_widget_string mixes netspeed and netinfo sub-items" {
+  export TMUX_VARS="@tokyo-night-tmux_show_right_widgets netspeed, dns, privateip"
+  run build_widget_string "show_right_widgets"
+  [[ $output == "${netspeed}${netinfo_dns}${netinfo_privateip}" ]]
 }
 
 @test "tmux_version_gte returns true for versions below installed" {
