@@ -34,7 +34,7 @@ SHOW_COUNTRY=$(tmux show-option -gv @tokyo-night-tmux_netspeed_show_country 2>/d
 SHOW_COUNTRY="${SHOW_COUNTRY:-1}"
 # Show active DNS server
 SHOW_DNS=$(tmux show-option -gv @tokyo-night-tmux_netspeed_show_dns 2>/dev/null)
-SHOW_DNS="${SHOW_DNS:-0}"
+SHOW_DNS="${SHOW_DNS:-1}"
 
 # Full mode override: show all info when displayed on the second status line
 if [[ ${TOKYO_NETSPEED_FULL} -eq 1 ]]; then
