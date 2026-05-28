@@ -165,7 +165,7 @@ teardown() {
   tmp_cache=$(mktemp)
   IP_CACHE_FILE="$tmp_cache"
 
-  write_ip_cache "203.0.113.42" "US" "wlan0" "MyWiFi"
+  write_ip_cache "203.0.113.42" "US" "8.8.8.8" "wlan0" "MyWiFi"
   [[ -f $tmp_cache ]]
 
   run read_ip_cache "wlan0" "MyWiFi" "3600"
@@ -180,7 +180,7 @@ teardown() {
   tmp_cache=$(mktemp)
   IP_CACHE_FILE="$tmp_cache"
 
-  write_ip_cache "203.0.113.42" "US" "wlan0" "MyWiFi"
+  write_ip_cache "203.0.113.42" "US" "8.8.8.8" "wlan0" "MyWiFi"
   # Use 0-second refresh rate to force stale
   run read_ip_cache "wlan0" "MyWiFi" "0"
   [[ -z $output ]]
@@ -194,7 +194,7 @@ teardown() {
   tmp_cache=$(mktemp)
   IP_CACHE_FILE="$tmp_cache"
 
-  write_ip_cache "203.0.113.42" "US" "wlan0" "MyWiFi"
+  write_ip_cache "203.0.113.42" "US" "8.8.8.8" "wlan0" "MyWiFi"
   # Different interface
   run read_ip_cache "eth0" "MyWiFi" "3600"
   [[ -z $output ]]

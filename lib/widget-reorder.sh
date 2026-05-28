@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # Known widget short names (must match case labels in build_widget_string)
-WIDGET_NAMES=(battery path music netspeed git wbg datetime date time hostname)
+WIDGET_NAMES=(battery path music netspeed git wbg datetime date time hostname netinfo dns privateip publicip ssid signal)
 
 # Reset all companion widget-enabled flags to 0.
 # Call once before build_widget_string to avoid stale flags.
@@ -79,6 +79,30 @@ function build_widget_string() {
       hostname)
         result+="$hostname"
         tmux set-option -g "@tokyo-night-tmux_widget_enabled_hostname" 1 2>/dev/null
+        ;;
+      netinfo)
+        result+="$netinfo"
+        tmux set-option -g "@tokyo-night-tmux_widget_enabled_netinfo" 1 2>/dev/null
+        ;;
+      dns)
+        result+="$netinfo_dns"
+        tmux set-option -g "@tokyo-night-tmux_widget_enabled_dns" 1 2>/dev/null
+        ;;
+      privateip)
+        result+="$netinfo_privateip"
+        tmux set-option -g "@tokyo-night-tmux_widget_enabled_privateip" 1 2>/dev/null
+        ;;
+      publicip)
+        result+="$netinfo_publicip"
+        tmux set-option -g "@tokyo-night-tmux_widget_enabled_publicip" 1 2>/dev/null
+        ;;
+      ssid)
+        result+="$netinfo_ssid"
+        tmux set-option -g "@tokyo-night-tmux_widget_enabled_ssid" 1 2>/dev/null
+        ;;
+      signal)
+        result+="$netinfo_signal"
+        tmux set-option -g "@tokyo-night-tmux_widget_enabled_signal" 1 2>/dev/null
         ;;
       esac
     fi

@@ -1,3 +1,10 @@
 # JUnit reports
 **/report.xml
 venv/**
+
+# Test scripts and artifacts
+test/
+tmp/
+
+# tmux integration test logs
+tmux-*.log
