@@ -181,13 +181,15 @@ function read_ip_cache() {
 function write_ip_cache() {
   local ip="$1"
   local code="$2"
-  local iface="$3"
-  local ssid="$4"
+  local dns="$3"
+  local iface="$4"
+  local ssid="$5"
   local now
   now=$(date +%s)
   cat >"$IP_CACHE_FILE" <<-EOF
 PUBLIC_IP="$ip"
 COUNTRY_CODE="$code"
+ACTIVE_DNS="$dns"
 CACHE_TIME="$now"
 CACHED_IFACE="$iface"
 CACHED_SSID="$ssid"
@@ -341,9 +343,26 @@ function get_public_ip_info() {
   if [[ -n $fresh ]]; then
     local ip="${fresh%|*}"
     local code="${fresh#*|}"
-    write_ip_cache "$ip" "$code" "$iface" "$ssid"
+    local dns=""
+    dns=$(get_active_dns "$iface")
+    write_ip_cache "$ip" "$code" "$dns" "$iface" "$ssid"
     printf '%s\n' "$fresh"
   fi
+}
+
+# Get cached DNS server (reads from shared IP/DNS cache)
+function get_cached_dns() {
+  local iface="$1"
+  local ssid="$2"
+  local refresh_rate="${3:-300}"
+
+  local cached
+  cached=$(read_ip_cache "$iface" "$ssid" "$refresh_rate")
+  [[ -z $cached ]] && return
+
+  # Cache is fresh — source to get ACTIVE_DNS
+  [[ -f $IP_CACHE_FILE ]] && source "$IP_CACHE_FILE"
+  echo "$ACTIVE_DNS"
 }
 
 # Convert two-letter country code to flag emoji
