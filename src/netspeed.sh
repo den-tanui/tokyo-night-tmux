@@ -105,19 +105,21 @@ if [[ $IFACE_TYPE == "wifi" ]]; then
   fi
 fi
 
-# Public IP, country, and DNS (WiFi only)
+# Public IP and country (WiFi only)
 PUBLIC_IP=""
 COUNTRY_CODE=""
-ACTIVE_DNS=""
 if [[ -n $SSID ]]; then
   public_info=$(get_public_ip_info "$INTERFACE" "$SSID" "$IP_REFRESH_RATE")
   if [[ -n $public_info ]]; then
     PUBLIC_IP="${public_info%|*}"
     COUNTRY_CODE="${public_info#*|}"
   fi
-  if [[ ${SHOW_DNS} -eq 1 ]]; then
-    ACTIVE_DNS=$(get_active_dns "$INTERFACE")
-  fi
+fi
+
+# Active DNS server (any interface)
+ACTIVE_DNS=""
+if [[ ${SHOW_DNS} -eq 1 ]]; then
+  ACTIVE_DNS=$(get_active_dns "$INTERFACE")
 fi
 
 NETWORK_ICON=${NET_ICONS[${IFACE_TYPE}_${IFACE_STATUS}]}
