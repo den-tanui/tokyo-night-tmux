@@ -58,7 +58,12 @@ window_space="${window_tidy:-0}"
 window_space=$([[ $window_tidy == "0" ]] && echo " " || echo "")
 
 netspeed="#($SCRIPTS_PATH/netspeed.sh)"
-netspeed_full="#(TOKYO_NETSPEED_FULL=1 $SCRIPTS_PATH/netspeed.sh)"
+netinfo="#($SCRIPTS_PATH/netinfo.sh)"
+netinfo_ssid="#(NETINFO_SHOW=ssid $SCRIPTS_PATH/netinfo.sh)"
+netinfo_signal="#(NETINFO_SHOW=signal $SCRIPTS_PATH/netinfo.sh)"
+netinfo_privateip="#(NETINFO_SHOW=privateip $SCRIPTS_PATH/netinfo.sh)"
+netinfo_publicip="#(NETINFO_SHOW=publicip $SCRIPTS_PATH/netinfo.sh)"
+netinfo_dns="#(NETINFO_SHOW=dns $SCRIPTS_PATH/netinfo.sh)"
 cmus_status="#($SCRIPTS_PATH/music-tmux-statusbar.sh)"
 git_status="#($SCRIPTS_PATH/git-status.sh #{q:pane_current_path})"
 wb_git_status="#($SCRIPTS_PATH/wb-git-status.sh #{q:pane_current_path} &)"
@@ -101,7 +106,7 @@ if [[ ${SECOND_STATUS} -eq 1 ]] && tmux_version_gte 3.2; then
   # Default: path on the left, full netspeed info on the right
   if [[ -z $SECOND_LEFT ]] && [[ -z $SECOND_RIGHT ]]; then
     SECOND_LEFT="$current_path"
-    SECOND_RIGHT="$netspeed_full"
+    SECOND_RIGHT="$netinfo"
   fi
 
   if [[ -n $SECOND_LEFT ]] || [[ -n $SECOND_RIGHT ]]; then
