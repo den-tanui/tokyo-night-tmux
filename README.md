@@ -126,8 +126,8 @@ set -g @tokyo-night-tmux_show_datetime 1
 | **Auto-enable by order** | Listing a widget in your config implicitly enables it |
 | Local git status | Branch, changes, push/pull sync indicator |
 | GitHub / GitLab widget | Open PRs, pending reviews, assigned issues |
-| Netspeed | Upload/download speed with Wi-Fi signal (%) and interface detection |
-| Signal strength | Color-coded percentage (red/yellow/green) |
+| Netspeed | Upload/download speed with auto-detected interface |
+| Netinfo | SSID, signal strength, local & public IPs, DNS server, country flag |
 | Now Playing | Track info via playerctl (Linux) or nowplaying-cli (macOS) |
 | Battery | Level and charge state with contextual icons |
 | Date & Time | Configurable format (YMD/MDY/DMY, 12H/24H) |
@@ -152,9 +152,9 @@ Reload with `tmux source ~/.tmux.conf`.
 | `show_right_widgets` | comma-separated widget names | *(upstream fallback)* | Main bar widget order |
 | `show_second_status` | `0`, `1` | auto | Force second status bar off (`0`) |
 | `show_second_left_widgets` | comma-separated widget names | `path` | Second bar left side (auto-enables bar) |
-| `show_second_right_widgets` | comma-separated widget names | `netspeed` | Second bar right side (auto-enables bar) |
+| `show_second_right_widgets` | comma-separated widget names | `netinfo` | Second bar right side (auto-enables bar) |
 
-**Available widget names:** `battery`, `path`, `music`, `netspeed`, `git`, `wbg`, `datetime`, `date`, `time`, `hostname`.
+**Available widget names:** `battery`, `path`, `music`, `netspeed`, `git`, `wbg`, `datetime`, `date`, `time`, `hostname`, `netinfo`, `dns`, `privateip`, `publicip`, `ssid`, `signal`.
 Passthrough entries (`#()`, `#{}`, `#[]`) are injected verbatim.
 Being in any order list **auto-enables** the widget. Set `_show_<name> 0` to hard opt-out.
 
@@ -165,6 +165,7 @@ Being in any order list **auto-enables** the widget. Set `_show_<name> 0` to har
 | `show_git` | off |
 | `show_wbg` | off |
 | `show_netspeed` | off |
+| `show_netinfo` | off |
 | `show_battery_widget` | off |
 | `show_music` | off |
 | `show_path` | off |
@@ -178,12 +179,13 @@ Being in any order list **auto-enables** the widget. Set `_show_<name> 0` to har
 | Widget | Option | Values | Default | Description |
 |--------|--------|--------|---------|-------------|
 | **Netspeed** | `netspeed_iface` | interface name | auto-detected | Network interface to monitor |
-| | `netspeed_showip` | `off`, `local`, `public`, `both` | `local` | IP address display mode |
-| | `netspeed_show_country` | `0`, `1` | `1` | Country flag next to public IP |
-| | `netspeed_show_dns` | `0`, `1` | `0` | Active DNS server |
 | | `netspeed_refresh` | seconds | `1` | Speed sample interval |
-| | `netspeed_ip_refresh_rate` | seconds | `300` | Public IP fetch interval |
-| | `netspeed_signal_refresh_rate` | seconds | `10` | SSID/signal re-sample interval |
+| **Netinfo** | `NETINFO_SHOW` | env var: `ssid`, `signal`, `privateip`, `publicip`, `dns` | *(all)* | Show a single sub-item (used internally by widget ordering) |
+| | `netinfo_showip` | `off`, `local`, `public`, `both` | `local` | IP address display mode |
+| | `netinfo_show_flag` | `0`, `1` | `1` | Country flag next to public IP |
+| | `netinfo_show_dns` | `0`, `1` | `0` | Active DNS server |
+| | `netinfo_ip_refresh_rate` | seconds | `300` | Public IP fetch interval |
+| | `netinfo_signal_refresh_rate` | seconds | `10` | SSID/signal re-sample interval |
 | **Battery** | `battery_name` | battery name | `BAT1` / `InternalBattery-0` | Power supply device |
 | | `battery_low_threshold` | 0–100 | `21` | Warning threshold % |
 | **Date & Time** | `date_format` | `YMD`, `MDY`, `DMY`, `hide` | system default | Date display format |

@@ -37,13 +37,19 @@ set -g @tokyo-night-tmux_show_second_right_widgets "music,netspeed"
 | `battery` | Battery | `_show_battery_widget` | |
 | `path` | Path | `_show_path` | |
 | `music` | Now Playing | `_show_music` | |
-| `netspeed` | Netspeed | `_show_netspeed` | |
+| `netspeed` | Netspeed | `_show_netspeed` | Pure TX/RX speeds only |
 | `git` | Git status | `_show_git` | |
 | `wbg` | GitHub/GitLab | `_show_wbg` | |
 | `datetime` | Date & Time | `_show_datetime` | |
 | `date` | Date only | `_show_date` | |
 | `time` | Time only | `_show_time` | |
 | `hostname` | Hostname | `_show_hostname` | |
+| `netinfo` | Network info | `_show_netinfo` | SSID, IPs, DNS, signal, flag |
+| `ssid` | Wi-Fi SSID | — | Netinfo sub-item (use via widget order) |
+| `signal` | Signal strength | — | Color-coded % (red/yellow/green) |
+| `privateip` | Local IP | — | Netinfo sub-item |
+| `publicip` | Public IP | — | Netinfo sub-item |
+| `dns` | DNS server | — | Netinfo sub-item |
 
 ### Second status bar
 
@@ -123,21 +129,50 @@ and the macOS system media controls.
 
 ## Netspeed
 
-Displays real-time upload and download speeds, local and public IPs, Wi-Fi
-signal strength with color-coded percentage, and the active SSID.
+Displays real-time upload and download speeds for the active network interface.
 
 ```bash
 set -g @tokyo-night-tmux_show_netspeed 1
-set -g @tokyo-night-tmux_netspeed_iface "wlan0"      # auto-detected via default route if omitted
-set -g @tokyo-night-tmux_netspeed_showip "local"      # off / local / public / both (default: local)
-set -g @tokyo-night-tmux_netspeed_show_country 1      # show flag next to public IP (default: 1)
-set -g @tokyo-night-tmux_netspeed_show_dns 0          # show active DNS server (default: 0)
-set -g @tokyo-night-tmux_netspeed_refresh 1           # speed sample interval in seconds
-set -g @tokyo-night-tmux_netspeed_ip_refresh_rate 300 # public IP fetch interval in seconds
-set -g @tokyo-night-tmux_netspeed_signal_refresh_rate 10  # SSID/signal re-sample interval in seconds
+set -g @tokyo-night-tmux_netspeed_iface "wlan0"   # auto-detected via default route if omitted
+set -g @tokyo-night-tmux_netspeed_refresh 1       # speed sample interval in seconds
 ```
 
+> **Note:** Netspeed is now **speed only**. SSID, signal strength, IP
+> addresses, DNS, and country flag have moved to the [Netinfo](#netinfo)
+> widget below.
+
 **Requirements:** [bc](https://www.gnu.org/software/bc/)
+
+---
+
+## Netinfo
+
+Displays network information: SSID, signal strength with color-coded
+percentage, local and public IP addresses, active DNS server, and country flag.
+
+```bash
+set -g @tokyo-night-tmux_show_netinfo 1
+set -g @tokyo-night-tmux_netinfo_showip "local"      # off / local / public / both (default: local)
+set -g @tokyo-night-tmux_netinfo_show_flag 1          # show flag next to public IP (default: 1)
+set -g @tokyo-night-tmux_netinfo_show_dns 0           # show active DNS server (default: 0)
+set -g @tokyo-night-tmux_netinfo_ip_refresh_rate 300  # public IP fetch interval in seconds
+set -g @tokyo-night-tmux_netinfo_signal_refresh_rate 10  # SSID/signal re-sample interval in seconds
+```
+
+Uses the same `netspeed_iface` option as the netspeed widget for interface
+detection.
+
+### Sub-items (widget ordering)
+
+Netinfo sub-items can be placed independently in widget order lists:
+
+```bash
+set -g @tokyo-night-tmux_show_right_widgets "dns,privateip,publicip,ssid,signal"
+```
+
+Each sub-item respects the corresponding `netinfo_show_*` and refresh rate
+options. Sub-items are not controlled by individual `_show_*` flags — use
+them only via widget ordering lists.
 
 ### Signal strength
 
@@ -152,12 +187,6 @@ percentage:
 
 Signal strength is fetched at the `signal_refresh_rate` interval (default 10s)
 and cached to avoid calling `iw`/`iwconfig` on every status refresh.
-
-### second status bar mode
-
-When shown on the second status bar, netspeed displays in **full mode**:
-public IP, country flag, local IP, signal strength, SSID, and traffic speeds.
-When on the main bar, only TX/RX speeds are shown.
 
 ---
 
