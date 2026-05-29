@@ -382,13 +382,13 @@ function get_active_dns() {
   local dns=""
 
   if [[ "$(uname)" == "Linux" ]]; then
-    # resolvectl (systemd-resolved)
-    if command -v resolvectl >/dev/null; then
-      dns=$(resolvectl status "$interface" 2>/dev/null | grep 'Current DNS Server' | awk '{print $NF}')
+    # /etc/resolv.conf (the effective DNS — works with WARP, stub resolvers, etc.)
+    if [[ -r /etc/resolv.conf ]]; then
+      dns=$(awk '/^nameserver/ {print $2; exit}' /etc/resolv.conf)
     fi
-    # /etc/resolv.conf (skip local stubs)
-    if [[ -z $dns ]] && [[ -r /etc/resolv.conf ]]; then
-      dns=$(awk '/^nameserver/ && $2 !~ /^127\./ {print $2; exit}' /etc/resolv.conf)
+    # resolvectl (systemd-resolved)
+    if [[ -z $dns ]] && command -v resolvectl >/dev/null; then
+      dns=$(resolvectl status "$interface" 2>/dev/null | grep 'Current DNS Server' | awk '{print $NF}')
     fi
     # nmcli
     if [[ -z $dns ]] && command -v nmcli >/dev/null; then

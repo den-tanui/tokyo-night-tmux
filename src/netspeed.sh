@@ -37,4 +37,4 @@ TX_DIFF=$((TX2 - TX1))
 RX_SPEED="$(readable_format "$RX_DIFF" "$TIME_DIFF")"
 TX_SPEED="$(readable_format "$TX_DIFF" "$TIME_DIFF")"
 
-echo "${RESET}░ #[fg=${THEME[bgreen]}]\U000f06f4#[fg=${THEME[foreground]}] $RX_SPEED #[fg=${THEME[bblue]}]\U000f06f6#[fg=${THEME[foreground]}] $TX_SPEED "
+echo -e "${RESET}░ #[fg=${THEME[bgreen]}]\U000f06f4#[fg=${THEME[foreground]}] $RX_SPEED #[fg=${THEME[bblue]}]\U000f06f6#[fg=${THEME[foreground]}] $TX_SPEED "
